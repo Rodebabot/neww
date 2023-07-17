@@ -1,7 +1,5 @@
 import pandas as pd
 
-pd.set_option('display.max_columns', None)
-
 def read_file(filename):
     with open(filename, 'r') as file:
         lines = file.readlines()
@@ -93,7 +91,10 @@ def get_second_prefix(data):
     second_prefix = []
     for i, line in enumerate(data):
         if("SECURITY TOTALS" in line):
-            cleaned = fix_second_prefix(data[i+1])
+            try:
+                cleaned = fix_second_prefix(data[i+1])
+            except:
+                pass
             second_prefix.append(cleaned)
             to_remove.append(i+1)
     return to_remove, second_prefix
@@ -114,111 +115,111 @@ def is_int(string):
         return False
 
 def fix_row(row):
-	row = row.replace('\t',' ')
-	row = row[2:]
-	row = row.split(' ')
-	updated_row = []
+    row = row.replace('\t',' ')
+    row = row[2:]
+    row = row.split(' ')
+    updated_row = []
+    row = [i for i in row if i.strip() not in ['', ' ', '\t']]
 
-	row = [i for i in row if i.strip() not in ['', ' ', '\t']]
+    '''
+    idx_check=0
+    if(row[idx_check].isdigit()):
+        updated_row.append(row[idx_check])
+    else:
+        idx_check-=1
+        updated_row.append('')
+    idx_check+=1
 
-	idx_check=0
+    if(row[idx_check].isdigit()):
+        updated_row.append(row[idx_check])
+    else:
+        idx_check-=1
+        updated_row.append('')
+    idx_check+=1
 
-	if(row[idx_check].isdigit()):
-		updated_row.append(row[idx_check])
-	else:
-		idx_check-=1
-		updated_row.append('')
-	idx_check+=1
+    if(len(row[idx_check])==3):
+        updated_row.append(row[idx_check])
+    else:
+        idx_check-=1
+        updated_row.append('')
+    idx_check+=1
 
-	if(row[idx_check].isdigit()):
-		updated_row.append(row[idx_check])
-	else:
-		idx_check-=1
-		updated_row.append('')
-	idx_check+=1
+    if(len(row[idx_check])==1):
+        updated_row.append(row[idx_check])
+    else:
+        idx_check-=1
+        updated_row.append('')
+    idx_check+=1
 
-	if(len(row[idx_check])==3):
-		updated_row.append(row[idx_check])
-	else:
-		idx_check-=1
-		updated_row.append('')
-	idx_check+=1
+    if(len(row[idx_check])==4):
+        updated_row.append(row[idx_check])
+    else:
+        idx_check-=1
+        updated_row.append('')
+    idx_check+=1
 
-	if(len(row[idx_check])==1):
-		updated_row.append(row[idx_check])
-	else:
-		idx_check-=1
-		updated_row.append('')
-	idx_check+=1
+    if(len(row[idx_check])==1):
+        updated_row.append(row[idx_check])
+    else:
+        idx_check-=1
+        updated_row.append('')
+    idx_check+=1
 
-	if(len(row[idx_check])==4):
-		updated_row.append(row[idx_check])
-	else:
-		idx_check-=1
-		updated_row.append('')
-	idx_check+=1
+    if(len(row[idx_check])>6):
+        updated_row.append(row[idx_check])
+    else:
+        idx_check-=1
+        updated_row.append('')
+    idx_check+=1
 
-	if(len(row[idx_check])==1):
-		updated_row.append(row[idx_check])
-	else:
-		idx_check-=1
-		updated_row.append('')
-	idx_check+=1
+    if(('/' in row[idx_check]) and ('/' in row[idx_check+1])):
+        updated_row.append(row[idx_check])
+    else:
+        idx_check-=1
+        updated_row.append('')
+    idx_check+=1
 
-	if(len(row[idx_check])>6):
-		updated_row.append(row[idx_check])
-	else:
-		idx_check-=1
-		updated_row.append('')
-	idx_check+=1
+    if('/' in row[idx_check]):
+        updated_row.append(row[idx_check])
+    else:
+        idx_check-=1
+        updated_row.append('')
+    idx_check+=1
 
-	if(('/' in row[idx_check]) and ('/' in row[idx_check+1])):
-		updated_row.append(row[idx_check])
-	else:
-		idx_check-=1
-		updated_row.append('')
-	idx_check+=1
+    if((is_float(row[idx_check]) or is_int(row[idx_check]) or '-' in row[idx_check]) and (is_float(row[idx_check+1]) or is_int(row[idx_check+1])  or '-' in row[idx_check])):
+        updated_row.append(row[idx_check])
+    else:
+        idx_check-=1
+        updated_row.append('')
+    idx_check+=1
 
-	if('/' in row[idx_check]):
-		updated_row.append(row[idx_check])
-	else:
-		idx_check-=1
-		updated_row.append('')
-	idx_check+=1
+    if(is_float(row[idx_check]) or is_int(row[idx_check]) or '-' in row[idx_check]):
+        updated_row.append(row[idx_check])
+    else:
+        idx_check-=1
+        updated_row.append('')
+    idx_check+=1
 
-	if((is_float(row[idx_check]) or is_int(row[idx_check]) or '-' in row[idx_check]) and (is_float(row[idx_check+1]) or is_int(row[idx_check+1])  or '-' in row[idx_check])):
-		updated_row.append(row[idx_check])
-	else:
-		idx_check-=1
-		updated_row.append('')
-	idx_check+=1
+    if(len(row[idx_check])<=2):
+        updated_row.append(row[idx_check])
+    else:
+        idx_check-=1
+        updated_row.append('')
+    idx_check+=1
 
-	if(is_float(row[idx_check]) or is_int(row[idx_check]) or '-' in row[idx_check]):
-		updated_row.append(row[idx_check])
-	else:
-		idx_check-=1
-		updated_row.append('')
-	idx_check+=1
+    updated_row.append(row[idx_check])
+    idx_check+=1
 
-	if(len(row[idx_check])<=2):
-		updated_row.append(row[idx_check])
-	else:
-		idx_check-=1
-		updated_row.append('')
-	idx_check+=1
+    updated_row.append(row[idx_check])
+    idx_check+=1
 
-	updated_row.append(row[idx_check])
-	idx_check+=1
+    updated_row.append(row[idx_check])
 
-	updated_row.append(row[idx_check])
-	idx_check+=1
+    updated_row = ','.join(updated_row)
+    return updated_row
+    '''
 
-	updated_row.append(row[idx_check])
-	idx_check+=1
-    
-	updated_row = ','.join(updated_row)
-	return updated_row
-
+    return ','.join(row)
 
 
 filename = 'example.txt'
@@ -229,20 +230,47 @@ indices = find_indices(lines, search_text)
 indices.append(-1)
 
 final = []
-
+transactions = []
+# iterate over every section of "NOMURA SECURITIES INTL"
 for i in range(len(indices) - 1):
     start = indices[i]
     end = indices[i+1]
     data = lines[start:end]
+
+    # ignore the last 2 sections of "NOMURA SECURITIES INTL" 
+    if(len(data)<10):
+    	continue
+
+    # remove last '1' right before next "NOMURA SECURITIES INTL" section
+    if(len(data[-1])<=4):
+    	data.pop()
+
     first_prefix = get_first_prefix(start, end)
 
     security_totals_indicies = find_indices(data, 'SECURITY TOTALS')
-    
-    data = data[10:security_totals_indicies[-1]]
+
+    try:
+        final_security_totals_index = security_totals_indicies[-1]
+    except:
+    	pass
+
+    try:
+	    if('TRANSACTION COUNT' in data[security_totals_indicies[-1]+1]): # check line right after last 'SECURITY TOTALS'
+	        data = data[10:security_totals_indicies[-1]]
+	        #transactions.append(data[security_totals_indicies[-1]+1])
+	    else:
+	    	data = data[10:end-1]
+    except:
+        #data = data[10:end-1]
+        pass
+
+
     data.insert(0,'SECURITY TOTALS')
     
     to_remove, second_prefix = get_second_prefix(data)
 
+
+    
     data = [each[:-1] for each in data]
     data = [item for i, item in enumerate(data) if i not in to_remove]
 
@@ -254,8 +282,10 @@ for i in range(len(indices) - 1):
         temp.append(first_second_prefix_combined)
         second_prefix_updated.append(temp)
 
-          
 
+
+    
+    
     for x in range(len(second_prefix_updated)):
         counter = 0
         for y in data[1:]:
@@ -267,12 +297,18 @@ for i in range(len(indices) - 1):
             final.append(temp)
 
 
+    for x in final:
+        print(x)
+        print()
+    
+'''
 final = [i[0] for i in final]
 split_list = [string.split(",") for string in final]
 
+# Convert the split list into a DataFrame
 df = pd.DataFrame(split_list)
 df_no_duplicates = df.drop_duplicates()
-display(df_no_duplicates)
+print(df_no_duplicates)
 
 df_no_duplicates.to_csv('a.csv', index=False)
-
+'''
