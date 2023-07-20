@@ -1,0 +1,33 @@
+import tkinter as tk
+from tkinter import messagebox
+import pandas as pd
+import webbrowser
+
+def open_link():
+    name = name_entry.get()
+    if name in df['Name'].values:
+        link = df.loc[df['Name'] == name, 'Link'].values[0]
+        messagebox.showinfo("Link Found", f"Opening link: {link}")
+        webbrowser.open(link)
+    else:
+        messagebox.showerror("Link Not Found", f"No link found for the name: {name}")
+
+# Load data from the Excel file
+file_path = 'data.xlsx'  # Replace with the path to your Excel file
+df = pd.read_excel(file_path)
+
+# Create the tkinter app
+app = tk.Tk()
+app.title("Link Opener App")
+
+# Widgets
+name_label = tk.Label(app, text="Enter your name:")
+name_label.pack()
+
+name_entry = tk.Entry(app)
+name_entry.pack()
+
+open_button = tk.Button(app, text="Open Link", command=open_link)
+open_button.pack()
+
+app.mainloop()
